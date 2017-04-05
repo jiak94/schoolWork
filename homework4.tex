@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{enumitem}
+\usepackage {tikz}
+\usetikzlibrary{positioning}
+\usepackage {qtree}
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{graphicx}
+\graphicspath{ {/home/jiakuan/algorithm/} }
+\begin{document}
+
+\noindent
+CSCI 6470\\
+Homework 4\\
+Jiakuan Li\\
+
+\noindent
+1.
+\begin{tikzpicture}[level/.style={sibling distance=60mm/#1}]
+\node [circle,draw] (z){q}
+  child {node [circle,draw] (a) {s}
+    child {node [circle,draw] (b) {v}
+    	  child {node [circle,draw] (c) {w}}}
+  }
+  child {node [circle,draw] (j) {t}
+    child {node [circle,draw] (k) {x}
+      child {node [circle,draw](l) {z}}
+  }
+  child {node [circle,draw] (m) {u}    
+  }
+};
+\end{tikzpicture}
+
+\noindent
+2.
+\begin{enumerate}[label=(\arabic*)]
+\item
+\begin{algorithm}[H]
+\caption{DFS-CONSTRAINED(G,$v$, $t$)}
+\begin{algorithmic}
+\IF {$v$ = $t$}
+\RETURN True
+\ENDIF
+\FOR {each vertex $u$ adjacent to $v$}
+	\STATE $u.\pi$ = $v$
+	\IF {$u.\mu$ = true}
+		\STATE DFS-CONSTRAINED(G, $u$, $t$)
+	\ENDIF
+\ENDFOR
+\RETURN False
+\end{algorithmic}
+\end{algorithm}
+
+\item
+Just like a normal DFS algorithm, but this algorithm does not visit deeper once it meets a vertex in $U$. So the worst case for this algorithm is it visit all the edges once. The time complexity of visiting all edges are $O(|E|)$. Plus the setting "visit" and "parent" properly for every node, the total time complexity if $O(|V| + |E|)$.
+\end{enumerate}
+
+\noindent
+3.
+\begin{enumerate}[label={}]
+\item
+$O(|V|)$ is not enough for detecting the any cycle in the undirect graph.\\
+The preparation stage, that is setting "visit" and "parent" properly, take $O(|V|)$, since every node in the graph needs to be visit. The for loop in the algorithm needs to be execute exactly one times in the worst case, (a tree). Therefore, the time complexity here is $O(|E|)$. And the total time is $O(|E|) + O(|V|)$. So $O(|V|)$ is not enough.
+\end{enumerate}
+\noindent
+4.
+\begin{enumerate}[label={}]
+\item
+\includegraphics[scale=0.35]{homework4_graph.png}
+
+\end{enumerate}
+
+\noindent
+5.
+\begin{enumerate}[label={}]
+\item
+First of all, I will define some status of node.
+1. white: not visited\\
+2. gray: visited, but it has unvisited neighbour.\\
+3. black: visited, and not unvisited neighbour.\\
+
+In order to prove, need to show for any edge ($u$, $v$), $u$ turns black after $v$.\\
+1. If $v$ is black, then obviously $u$ turns black after $v$.\\
+2. If $v$ is gray, then the graph is not a DAG. Since from $v$, there exists another path to $u$, plus the edge ($u$, $v$). \\
+3. If $v$ is white, then it will be inserted into the stack after $u$. When poped the stack, $v$ will come out before $u$.
+\end{enumerate}
+
+\end{document}

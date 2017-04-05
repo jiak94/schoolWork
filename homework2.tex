@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\begin{document}
+
+\noindent
+CSCI 6470\\
+Homework 2\\
+Jiakuan Li\\
+
+\noindent
+1.
+\begin{enumerate}[label={}]
+\item
+The number of distinct outcome is $n+1$ in the worst case. Therefore, the decision tree has $n+1$ leaves. Moreover, there are at most 3 outcome per tree level. ($>, < , =$). So the tree height will be $\log_3 n$. Since $\log_3n$ is in $\Omega(\log_2n)$, is the lower bound is $\Omega(\log_2n)$.
+\end{enumerate}
+
+
+\noindent
+2.
+
+\begin{algorithm}
+\caption{SORTBINARYBIT $A(n)$}
+\begin{algorithmic} 
+\STATE $j = n - 1$
+\STATE $i = 0$
+\WHILE {$j < i$}
+\IF {$A[i] = 0$}
+\STATE $i++$
+\ELSE
+\STATE $swap(A[i], A[j])$
+\STATE $j--$
+\ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+\begin{enumerate}[label=(\arabic*)]
+\item
+The worst case if the list is in reverse order. The distance $i$ and $j$ moves is equal to $n$, which is the length of the list. So the upper bound for this algorithm is $O(n)$.
+
+\item 
+The lower bound of this algorithm is $\Omega(n)$.\\
+This is the optimal solution for the problem.\\
+The loop in this algorithm moves $i$ or $j$ per execution. Therefore, in order to get out from the loop, there are 3 solutions.
+\begin{enumerate}[label=\alph*]
+\item
+Move $i$ for $n$ times. $j$ remains at the origin position. (best case)
+\item
+Move $j$ for $n$ times. $i$ remains at the origin position. (worst case)
+\item
+Move $i$ for $k$ times and $j$ for $(n-k)$ times. (average case).
+\end{enumerate}
+No matter which condition was met. The total moves is $n$. For this algorithm, the upper bound is equal to lower bound, which is $\Omega(n)$.
+\end{enumerate}
+
+\noindent
+3.
+\begin{enumerate}[label={}]
+\item
+Build a binary sear tree to sort the list. \\
+STEP 1:\\
+Since only $k$ distinct element in the list, so the tree has only $k$ nodes. Therefore, the insertion/search takes $O(\log_2k)$. \\
+Then we need to maintain a counter for those $k$ elements in the list to count the appearance of each distinct element in the list.\\
+To walk through the tree takes $O(n)$, and build the tree takes $O(\log_2k)$.\\
+\\
+STEP 2:\\
+To print out the sorted list, we need to travel through the tree and combine the list with the counter.\\
+The tree traversal takes $O(k)$, the combination takes $O(n)$.\\
+\\
+The total time is $O(n\log_2k)$ + $O(n)$ + $O(k)$ = $O(n\log_2k)$ since $k < n$.
+\end{enumerate}
+
+\noindent
+4.
+\begin{enumerate}[label=(\arabic*)]
+\item
+\begin{algorithm}
+\caption{MINIMUMVC2 $G<V, E>$, $Result$}
+\begin{algorithmic}
+\IF {$|G| \leq 1$}
+\STATE return $\emptyset$
+\ENDIF
+\STATE select a random vertex
+\STATE add the selected vertex to $Result$
+\STATE remove the vertex and its edge(s) from the graph
+\RETURN MINIMUMVC2($G$, $Result$)
+
+\end{algorithmic}
+\end{algorithm}
+
+\item
+\begin{algorithm}
+\caption{MINIMUMVC2 $G<V, E>$, $Result$}
+\begin{algorithmic}
+\STATE select a vertex with most degrees.
+\STATE add the selected vertex to $Result$
+\STATE remove the vertex and its edge(s) from the graph
+\STATE remove the vertex with 0 degree from the graph.
+\RETURN MINIMUMVC2($G$, $Result$)
+
+\end{algorithmic}
+\end{algorithm}
+\end{enumerate}
+
+\noindent
+5.
+\begin{enumerate}[label=(\arabic*)]
+\item
+I will maintain a array to store the second fastest.\\
+The base case is $sf[1]$ since $sf[0]$ does not have the "second fastest" path.
+$$ sf[1] = min(sf[0] + s_1-switch, sf[0] + s_2-switch) $$
+This is actually the objective function for this algorithm.
+
+\item
+To find the top $k$ path, the time complexity is $O(n)$ since we just need to walk through the station once. 
+\end{enumerate}
+
+\noindent
+6.
+\begin{enumerate}[label=(\arabic*)]
+\item
+Property of optimal substructure:\\
+For each roll, select the greatest probability to roll the $i^{th}$ number.\\
+Property of overlapping subproblem:\\
+\\
+
+For the $i^{th}$ roll, the probability is based on the previous roll. The previous roll might use loaded/normal dice. While computing the $i^{th}$ roll, we need to compare switching dice and not switching dice. This cause a overlapping on previous roll.
+
+\item
+$p_1(i) = max(p_2(i-1) \cdot probabilitty-fair \cdot switch-chance, p_1(i-2) * probablity_fair \cdot not-switch-chance)$\\
+$p_2(i) = max(p_2(i-1) \cdot probability-loaded \cdot not-switch-chance , p_1(i-1) \cdot switch-chance \cdot probablity-loaded)$\\
+
+$p_1, p_2$ represent the fair dice and loaded dice.
+
+\end{enumerate}
+
+\noindent
+7.
+\begin{enumerate}[label=(\arabic*)]
+\item
+\begin{algorithm}
+\caption{MAXPROBABILITY $T[i, 2]$, $A[n]$}
+\begin{algorithmic}
+\STATE $T[0, 0]$ = chance of rolling A[0] for fair dice 
+\STATE $T[0, 1]$ = chance of rolling A[0] for loaded dice
+\FOR{i = 1:Len(A)}
+\STATE $p1$ = chance of rolling $A[i]$ on fair dice
+\STATE $p2$ = chance of rolling $A[i]$ on loaded dice
+\STATE $T[i, 0]$ = $max(T[i-1, 0] \cdot p1 \cdot not-switch-chance, T[i-1, 1] \cdot switch-chance \cdot p1)$
+\STATE $T[i, 1]$ = $max(T[i-1, 0] \cdot switch-chance \cdot p2, T[i-1, 1] \cdot switch-chance \cdot p2)$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\item
+\begin{algorithm}
+\caption{PRINTOUT $T[i, 2]$, $A[n]$}
+\begin{algorithmic}
+\STATE Res[n]
+\FOR{i = Len(A):0}
+\IF{$T[i, 0] > T[i, 1]$}
+\STATE Res[i] = 0 
+\ELSE
+\STATE Res[i] = 1
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\end{enumerate}
+
+\end{document}

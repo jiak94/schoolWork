@@ -1,0 +1,164 @@
+\documentclass{article}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\begin{document}
+
+\noindent
+CSCI 6470\\
+Homework 3\\
+Jiakuan Li\\
+
+\noindent
+1.
+\begin{algorithm}
+\caption{PAIRWISEALIGHMENT(X, Y)}
+\begin{algorithmic}
+\STATE $m=length(X)$
+\STATE $n=length(Y)$
+\STATE $S[0][0] = 0$
+\FOR{$i = 1$ to $m$}
+\STATE $S[i][0] = S[i-1][0] + d[X[i], '-']$
+\ENDFOR
+\FOR{$j = 1$ to $n$}
+\STATE $S[0][j] = S[0][j-1] + d['-', Y[j]]$
+\ENDFOR
+\STATE $a=S[i-1][j-1] + d[X[i], Y[j]]$
+\STATE $b=S[i-1][j] + d[X[i], '-']$
+\STATE $c=S[i][j-1] + d['-', Y[j]]$
+\IF{$a > b$ and $a > c$}
+\STATE $S[i][j] = a$
+\STATE $v[i][j] = '/'$
+\ELSIF{$b>a$ and $b>c$}
+\STATE $S[i][j] = b$
+\STATE $v[i][j] = 'X'$
+\ELSE
+\STATE $S[i][j] = c$
+\STATE $v[i][j] = 'Y'$
+\ENDIF
+\RETURN $S$
+\end{algorithmic}
+\end{algorithm}
+
+\pagebreak
+
+\begin{algorithm}
+\caption{TRACEALIGNMENT(X,Y,X',Y',v,m,n)}
+\begin{algorithmic}
+\IF{$m=0$ or $n=0$}
+\RETURN
+\ELSE
+\IF{$v[m][n]$= '/'}
+\STATE TRACEALIGNMENT(X,Y,X',Y',v,m,n)
+\STATE X'[m] = X[m]
+\STATE Y'[n] = Y[n]
+\ELSIF{$v[m][n]$ = 'X'}
+\STATE TRACEALIGNMENT(X,Y,X',Y',v,$m-1$,n)
+\STATE X'[m] = '-'
+\STATE Y'[n] = Y[n]
+\ELSE
+\STATE TRACEALIGNMENT(X,Y,X',Y',v,m,$n-1$)
+\STATE $X'[m] = X[m]$
+\STATE Y'[n] = '-'
+\ENDIF
+\ENDIF
+\STATE print X'
+\STATE print Y'
+\end{algorithmic}
+\end{algorithm}
+
+\pagebreak
+
+
+\noindent
+2.
+\begin{enumerate}[label=(\arabic*)]
+\item
+$V_{M} = max($\\
+$V_{M}(i-1, j-1) \cdot t_{M_{j-1}}, M_{j} \cdot e_{M_{j}}(x_{i})$\\
+$V_{I}(i-1, j-1) \cdot t_{I_{j-1}}, M_{j} \cdot e_{M_{j}}(x_{i})$\\
+$V_{D}(i-1, j-1) \cdot t_{D_{j-1}}, M_{j} \cdot e_{M_{j}}(x_{i})$\\
+$)$\\
+\\
+$V_{I} = max($\\
+$V_{M}(i-1, j-1) \cdot t_{M_{j}}, I_{j} \cdot e_{M_{j}}(x_{i})$\\
+$V_{I}(i-1, j-1) \cdot t_{I_{j}}, I_{j} \cdot e_{M_{j}}(x_{i})$\\
+$V_{D}(i-1, j-1) \cdot t_{D_{j}}, I_{j} \cdot e_{M_{j}}(x_{i})$\\
+$)$\\
+\\
+$V_{I} = max($\\
+$V_{M}(i, j-1) \cdot t_{M_{j}}, D_{j}$\\
+$V_{I}(i, j-1) \cdot t_{I_{j}}, D_{j}$\\
+$V_{D}(i, j-1) \cdot t_{D_{j}}, D_{j}$\\
+$)$\\
+\\
+Basecase:\\
+$V_{M}(0, 0) = 1$\\
+$V_{I}(0, 0) = 0$\\
+$V_{D}(0, 0) = 0$\\
+\item
+\begin{algorithm}[H]
+\caption{COMPUTE}
+\begin{algorithmic}
+\STATE $mtable[i][j]$
+\STATE $itable[i][j]$
+\STATE $dtable[i][j]$
+\STATE $mtable(0,0) = 1$
+\STATE $itable(0,0) = 0$
+\STATE $dtable(0,0) = 0$
+\FOR {$i=1$ to $i$}
+	\FOR{$j=1$ to $j$}
+	\STATE $mtable[i][j] = V_{M}(i, j)$
+	\STATE $itable[i][j] = V_{I}(i, j)$
+	\STATE $dtable[i][j] = V_{D}(i, j)$
+	\ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\end{enumerate}
+
+\noindent
+3.
+\begin{enumerate}[label=(\arabic*)]
+\item
+Find the store that covers most houses every time. Then remove those covered houses. Then repeat the this steps until all the houses are covered.
+\item
+Input: an array fills with 'h', and 'e'. 'h' stands for house, and 'e' stands for empty spot.
+\begin{algorithm}[H]
+\caption{FINDLOCATION(S)}
+\begin{algorithmic}
+\WHILE{ number of 'h' != 0}
+\STATE select the spot that covers the most houses
+\STATE mark the spot with 's' stands for 'shop'
+\STATE mark the covered house with 'c' stands for 'covered'
+\ENDWHILE
+\STATE the 's' in the array
+\STATE print the index of 's' in the array
+\end{algorithmic}
+\end{algorithm}
+\end{enumerate}
+
+\noindent
+4.
+\begin{enumerate}[label={}]
+\item
+Let $w_{h}, v_{h}$ be the weight available and value of the item with the highest value/pound ratio. Let $L(i)$ be the weight of item $i$ contained in the thief's loot L. Therefore, the total value V is 
+$$ \sum_{i=1}^{n} L(i)\cdot \frac{v_{i}}{w_{i}}$$
+If some of item $h$ is left, and $L(j) \neq 0$ for some $j \neq h$, then replacing $j$ with $h$ will yield a higher value.\\
+Now, there are two situations that leads to an optimal solution.\\
+Case 1:\\
+if $W < W_{n}$, the $L(h) = W$ and for all $j \neq h$, $L(j) = 0$ is the only take.\\
+Case 2:\\
+There is room left after greedy choice. $L(i), L(j) > 0, i \neq j$. Assume item $i$ was the first choice and $j=h$ a subsequent choice.
+\\
+Therefore, $V=L(i) \frac{v_{i}}{w_{i}} + L(h) \frac{v_{h}}{w_{h}}$\\
+If we choose the same amount $L(h)$ of item $h$ first, then the value will be
+$$ V' = L(h) \frac{v_{h}}{w_{h}} + L(i) \frac{v_{i}}{w_{i}} = V$$
+This actually the optimal solution.
+\end{enumerate}
+
+
+\end{document}
